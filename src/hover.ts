@@ -1,19 +1,16 @@
-const vscode = require("vscode");
+import * as vscode from "vscode";
 const fs = require("fs");
 const lessToJs = require("less-vars-to-js");
 
-/**
- * 鼠标悬停提示，当鼠标停在package.json的dependencies或者devDependencies时，
- * 自动显示对应包的名称、版本号和许可协议
- * @param {*} document
- * @param {*} position
- * @param {*} token
- */
-async function provideHover(document, position, token) {
+function provideHover(
+  document: vscode.TextDocument,
+  position: vscode.Position,
+  token: vscode.CancellationToken
+) {
   // 查询字符
   const word = document.getText(document.getWordRangeAtPosition(position));
   // 文件路径
-  const locations = vscode.workspace
+  const locations: string | string[] | undefined = vscode.workspace
     .getConfiguration()
     .get("lessVars.locations");
 
@@ -30,7 +27,8 @@ async function provideHover(document, position, token) {
   }
 
   // 字符串路径转数组
-  const allFile = typeof locations === "string" ? [locations] : locations;
+  const allFile: string[] =
+    typeof locations === "string" ? [locations] : locations;
 
   // 检测路径配置是否正确
   const error = [];
@@ -47,7 +45,7 @@ async function provideHover(document, position, token) {
   }
 
   // 汇总所有变量
-  let allVars = {};
+  let allVars: Record<string, string> = {};
   for (let i = 0; i < allFile.length; i++) {
     const context = fs.readFileSync(allFile[i], "utf-8");
     allVars = {
@@ -85,7 +83,7 @@ async function provideHover(document, position, token) {
   return new vscode.Hover(hoverRes.length ? hoverRes : "未找到变量值");
 }
 
-module.exports = function (context) {
+module.exports = function (context: vscode.ExtensionContext) {
   // 注册鼠标悬停提示
   context.subscriptions.push(
     vscode.languages.registerHoverProvider("less", {
