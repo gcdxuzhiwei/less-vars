@@ -49,7 +49,7 @@ function provideHover(
   for (let i = 0; i < allFile.length; i++) {
     const context = fs.readFileSync(allFile[i], "utf-8");
     allVars = {
-      ...lessToJs(context, { resolveVariables: true }),
+      ...lessToJs(context),
       ...allVars,
     };
   }
