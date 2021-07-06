@@ -9,7 +9,8 @@ export function activate(context: vscode.ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
 
   require("./hover")(context); // 悬停提示
-  require("./test.js");
+  require("./completionAt")(context); // 自动补全@
+  // require("./completionEq")(context); // 自动补全?
 
   console.log("extension active");
 }
