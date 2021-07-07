@@ -1,18 +1,16 @@
 import * as vscode from "vscode";
+import utils from "./utils";
 const fs = require("fs");
 const lessToJs = require("less-vars-to-js");
 
 function provideHover(
   document: vscode.TextDocument,
-  position: vscode.Position,
-  token: vscode.CancellationToken
+  position: vscode.Position
 ) {
   // 查询字符
   const word = document.getText(document.getWordRangeAtPosition(position));
   // 文件路径
-  const locations: string | string[] | undefined = vscode.workspace
-    .getConfiguration()
-    .get("lessVars.locations");
+  const allFile = utils.getLocations() || [];
 
   // 只查询@开头
   if (!word || word[0] !== "@") {
@@ -20,15 +18,11 @@ function provideHover(
   }
 
   // 未配置文件路径
-  if (!locations || (locations instanceof Array && locations.length === 0)) {
+  if (allFile.length === 0) {
     return new vscode.Hover(
       "请先在settings.json中配置变量文件路径,配置项为lessVars.locations"
     );
   }
-
-  // 字符串路径转数组
-  const allFile: string[] =
-    typeof locations === "string" ? [locations] : locations;
 
   // 检测路径配置是否正确
   const error = [];
@@ -45,42 +39,21 @@ function provideHover(
   }
 
   // 汇总所有变量
-  let allVars: Record<string, string> = {};
-  for (let i = 0; i < allFile.length; i++) {
-    const context = fs.readFileSync(allFile[i], "utf-8");
-    allVars = {
-      ...lessToJs(context),
-      ...allVars,
-    };
+  const allVars = utils.getVarsByFiles(allFile);
+
+  const allDepVars = utils.getDepVars(allVars);
+
+  const valueByWord = allDepVars[word];
+
+  if (valueByWord && valueByWord.length) {
+    return new vscode.Hover(
+      valueByWord.map((current) => {
+        return `${current.key} : ${current.value} ;`;
+      })
+    );
+  } else {
+    return new vscode.Hover("未找到变量值");
   }
-
-  // 开始查找，值中有变量就继续查找
-  let currentWord = word;
-  const hoverRes = [];
-
-  while (currentWord) {
-    const currentValue = allVars[currentWord];
-    if (!currentValue) {
-      currentWord = "";
-    } else {
-      hoverRes.push(`${currentWord} : ${currentValue} ;`);
-      const nextStart = currentValue.search("@");
-      if (nextStart < 0) {
-        currentWord = "";
-      } else {
-        let nextEnd = nextStart + 1;
-        while (
-          nextEnd <= currentValue.length &&
-          /^[A-Za-z0-9-_]+$/.test(currentValue[nextEnd])
-        ) {
-          nextEnd++;
-        }
-        currentWord = currentValue.slice(nextStart, nextEnd);
-      }
-    }
-  }
-
-  return new vscode.Hover(hoverRes.length ? hoverRes : "未找到变量值");
 }
 
 module.exports = function (context: vscode.ExtensionContext) {
