@@ -3,7 +3,7 @@
   "displayName": "less vars",
   "description": "可提示less变量的VS Code插件",
   "publisher": "xuzhiwei",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "repository": "https://github.com/gcdxuzhiwei/less-vars.git",
   "engines": {
     "vscode": "^1.57.0"
