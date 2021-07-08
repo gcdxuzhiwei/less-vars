@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import utils from "./utils";
 const fs = require("fs");
-const lessToJs = require("less-vars-to-js");
 
 function provideHover(
   document: vscode.TextDocument,
@@ -9,13 +8,14 @@ function provideHover(
 ) {
   // 查询字符
   const word = document.getText(document.getWordRangeAtPosition(position));
-  // 文件路径
-  const allFile = utils.getLocations() || [];
 
   // 只查询@开头
   if (!word || word[0] !== "@") {
     return;
   }
+
+  // 文件路径
+  const allFile = utils.getLocations() || [];
 
   // 未配置文件路径
   if (allFile.length === 0) {

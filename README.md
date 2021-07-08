@@ -1,5 +1,7 @@
-1 在setting.json中配置lessVars.locations
+# 可提示 less 变量的 VS code 插件
 
-2 输入@出现提示
+## quick start
 
-3 鼠标悬浮出现提示
+1. 点击设置点击右上角**打开设置(json)**
+
+![](https://www.github.com/gcdxuzhiwei/less-vars/blob/main/images/setting.png?raw=true)

@@ -1,6 +1,8 @@
 import * as vscode from "vscode";
 const fs = require("fs");
 const lessToJs = require("less-vars-to-js");
+const getColor = require("get-css-colors");
+const colorAlpha = require("color-alpha");
 
 interface LessToJsConfig {
   resolveVariables?: boolean;
@@ -8,7 +10,7 @@ interface LessToJsConfig {
   stripPrefix?: boolean;
 }
 
-interface DepValue {
+export interface DepValue {
   key: string;
   value: string;
 }
@@ -75,6 +77,21 @@ const utils = {
       allDepVars[key] = depValue.reverse();
     }
     return allDepVars;
+  },
+  handleEval: (handleStr: string) => {
+    const colors = [
+      ...new Set([
+        ...(getColor(handleStr) || []),
+        ...(handleStr.match(/\d+\.?\d{0,2}%/g) || []),
+      ]),
+    ];
+    for (let i = 0; i < colors.length; i++) {
+      handleStr = handleStr.replaceAll(colors[i], `'${colors[i]}'`);
+    }
+    return handleStr;
+  },
+  fade: (a: string, b: string): string => {
+    return colorAlpha(a, b);
   },
 };
 
