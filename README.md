@@ -17,6 +17,18 @@
 
 ## 功能
 
-1. 在颜色后输入=提示所对应的变量值
+_示例常量文件如下_
 
 ![avatar](/images/list1.png)
+
+1. 在颜色后输入=提示所对应的变量值
+
+![avatar](/images/list2.png)
+
+2. 输入@后出现所有变量
+
+![avatar](/images/list3.png)
+
+3. 鼠标悬浮在变量上时出现提示
+
+![avatar](/images/list4.png)
