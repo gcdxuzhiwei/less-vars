@@ -44,8 +44,6 @@ function provideCompletionItems(
     }
   }
 
-  console.log(allDepVars);
-
   const allInnerColor: Record<string, string> = {};
   for (let i in allColorVars) {
     const value = allColorVars[i];

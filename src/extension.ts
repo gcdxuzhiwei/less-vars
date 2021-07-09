@@ -11,6 +11,7 @@ export function activate(context: vscode.ExtensionContext) {
   require("./hover")(context); // 悬停提示
   require("./completionAt")(context); // 自动补全@
   require("./completionEq")(context); // 自动补全=
+  require("./setLocations")(context); // 设置路径的webview
 
   console.log("extension active");
 }

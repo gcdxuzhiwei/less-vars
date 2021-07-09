@@ -9,11 +9,16 @@
   "lessVars.locations": [
     /* less常量文件的绝对路径 如："D:/code/color.less" */
     /* 格式为string[] 一条路径是可以配置为字符串 */
+    /* 越靠前优先级越高 */
   ]
 }
 ```
 
-2. 打开 less 文件使用插件
+2. 也可以在 less 文件中右键选择**设置 less 变量文件路径**
+
+![avatar](/images/start1.png)
+
+![avatar](/images/start2.png)
 
 ## 功能
 

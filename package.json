@@ -3,11 +3,15 @@
   "displayName": "less vars",
   "description": "可提示less变量的VS Code插件",
   "publisher": "xuzhiwei",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "repository": "https://github.com/gcdxuzhiwei/less-vars.git",
   "engines": {
     "vscode": "^1.57.0"
   },
+  "keywords": [
+    "less",
+    "vars"
+  ],
   "icon": "images/icon.jpg",
   "categories": [
     "Other"
@@ -16,7 +20,28 @@
     "onLanguage:less"
   ],
   "main": "./dist/extension.js",
-  "contributes": {},
+  "contributes": {
+    "configuration": {
+      "properties": {
+        "lessVars.locations": {}
+      }
+    },
+    "commands": [
+      {
+        "command": "setLocations",
+        "title": "设置less变量文件路径"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "resourceLangId == less",
+          "command": "setLocations",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",
