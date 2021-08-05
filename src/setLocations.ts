@@ -71,7 +71,7 @@ function registerCommand(context: vscode.ExtensionContext) {
           } else if (message.id === "selectFile") {
             vscode.window
               .showOpenDialog({
-                filters: { less: ["less"] },
+                filters: { less: ["less"], javascript: ["js"] },
               })
               .then((res) => {
                 if (res && res.length) {

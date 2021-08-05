@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 const fs = require("fs");
+const path = require("path");
 const lessToJs = require("less-vars-to-js");
 const getColor = require("get-css-colors");
 const colorAlpha = require("color-alpha");
@@ -15,16 +16,38 @@ export interface DepValue {
   value: string;
 }
 
+const myRequire = (str: string) => {
+  const module = { exports: {} };
+  ((module, exports) => {
+    eval(str);
+  })(module, module.exports);
+  return module.exports;
+};
+
 const utils = {
-  // 获得less文件路径数组
-  getLocations: () => {
+  // 获得less文件路径数组,${folder}转为工作文件夹路径
+  getLocations: (document?: vscode.TextDocument) => {
+    let workspace: string | undefined;
+    if (document) {
+      workspace = vscode.workspace.getWorkspaceFolder(document.uri)?.uri.fsPath;
+    }
+
+    const handlePath = (paths: string[]) => {
+      return paths.map((v) => {
+        if (workspace) {
+          return path.join(v.replace("${folder}", workspace));
+        } else {
+          return path.join(v);
+        }
+      });
+    };
     const locations: string | string[] | undefined = vscode.workspace
       .getConfiguration()
       .get("lessVars.locations");
     if (typeof locations === "string") {
-      return [locations];
+      return handlePath([locations]);
     } else if (locations instanceof Array) {
-      return locations;
+      return handlePath(locations);
     } else {
       return false;
     }
@@ -35,10 +58,21 @@ const utils = {
     for (let i = 0; i < allFile.length; i++) {
       if (fs.existsSync(allFile[i])) {
         const context = fs.readFileSync(allFile[i], "utf-8");
-        allVars = {
-          ...(lessToJs(context, config) || {}),
-          ...allVars,
-        };
+        if (allFile[i].slice(-4) === "less") {
+          allVars = {
+            ...(lessToJs(context, config) || {}),
+            ...allVars,
+          };
+        } else if (allFile[i].slice(-2) === "js") {
+          try {
+            allVars = {
+              ...(myRequire(context) || {}),
+              ...allVars,
+            };
+          } catch (e) {
+            console.log(e);
+          }
+        }
       }
     }
     return allVars;

@@ -15,7 +15,7 @@ function provideHover(
   }
 
   // 文件路径
-  const allFile = utils.getLocations() || [];
+  const allFile = utils.getLocations(document) || [];
 
   // 未配置文件路径
   if (allFile.length === 0) {
@@ -27,15 +27,12 @@ function provideHover(
   // 检测路径配置是否正确
   const error = [];
   for (let i = 0; i < allFile.length; i++) {
-    if (allFile[i].slice(-4) !== "less") {
-      error.push(`只支持less文件,${allFile[i]}`);
+    if (allFile[i].slice(-4) !== "less" && allFile[i].slice(-2) !== "js") {
+      error.push(`只支持less或js文件,${allFile[i]}`);
     }
     if (!fs.existsSync(allFile[i])) {
       error.push(`路径配置有误,${allFile[i]}`);
     }
-  }
-  if (error.length) {
-    return new vscode.Hover(error);
   }
 
   // 汇总所有变量
@@ -47,12 +44,16 @@ function provideHover(
 
   if (valueByWord && valueByWord.length) {
     return new vscode.Hover(
-      valueByWord.map((current) => {
-        return `${current.key} : ${current.value} ;`;
-      })
+      error
+        .map((v) => v)
+        .concat(
+          valueByWord.map((current) => {
+            return `${current.key} : ${current.value} ;`;
+          })
+        )
     );
   } else {
-    return new vscode.Hover("未找到变量值");
+    return new vscode.Hover(error.map((v) => v).concat('"未找到变量值"'));
   }
 }
 

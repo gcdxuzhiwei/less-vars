@@ -29,7 +29,7 @@ function provideCompletionItems(
   const innerColor = colorRgba(searchColor).join(",");
 
   const allDepVars = utils.getDepVars(
-    utils.getVarsByFiles(utils.getLocations() || [])
+    utils.getVarsByFiles(utils.getLocations(document) || [])
   );
 
   // 只取颜色变量

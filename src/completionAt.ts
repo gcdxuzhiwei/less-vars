@@ -12,7 +12,7 @@ function provideCompletionItems(
   }
 
   // 文件路径
-  const allFile = utils.getLocations() || [];
+  const allFile = utils.getLocations(document) || [];
 
   // 汇总所有变量
   const allVars = utils.getVarsByFiles(allFile);

@@ -7,8 +7,10 @@
 ```json
 {
   "lessVars.locations": [
-    /* less常量文件的绝对路径 如："D:/code/color.less" */
-    /* 格式为string[] 一条路径是可以配置为字符串 */
+    /* 支持less文件及commonjs导出的变量对象 */
+    /* 文件的绝对路径 如："D:/code/color.less" */
+    /* 文件相对工作区文件夹的路径时使用${folder},其等价于D:/code 如："${folder}/color.less" */
+    /* 格式为string[] 只有一条路径时可以配置为字符串 */
     /* 越靠前优先级越高 */
   ]
 }
