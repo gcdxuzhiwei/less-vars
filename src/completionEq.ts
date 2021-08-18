@@ -25,6 +25,9 @@ function provideCompletionItems(
 
   // 输入的颜色
   const searchColor = allColor[allColor.length - 1];
+
+  const colorStart = line.text.indexOf(searchColor);
+
   // 颜色转为rgba格式再转为字符串，用来比较
   const innerColor = colorRgba(searchColor).join(",");
 
@@ -84,6 +87,17 @@ function provideCompletionItems(
         label: i,
         kind: vscode.CompletionItemKind.Color,
         documentation,
+        command: {
+          title: "deleteColor",
+          command: "lessVars.deleteColor",
+          arguments: [
+            {
+              line: position.line,
+              start: colorStart,
+              end: position.character,
+            },
+          ],
+        },
       });
     }
   }

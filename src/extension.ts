@@ -13,6 +13,23 @@ export function activate(context: vscode.ExtensionContext) {
   require("./completionEq")(context); // 自动补全=
   require("./setLocations")(context); // 设置路径的webview
 
+  // 删除文字命令，在eq功能执行后删除颜色
+  context.subscriptions.push(
+    vscode.commands.registerTextEditorCommand(
+      "lessVars.deleteColor",
+      (editor, edit, position) => {
+        if (position) {
+          edit.delete(
+            new vscode.Range(
+              new vscode.Position(position.line, position.start),
+              new vscode.Position(position.line, position.end)
+            )
+          );
+        }
+      }
+    )
+  );
+
   console.log("extension active");
 }
 // this method is called when your extension is deactivated
