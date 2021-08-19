@@ -61,10 +61,14 @@ function provideCompletionItems(
   const colorStore: Record<string, string> = {};
   for (let i in allInnerColor) {
     const value = allInnerColor[i];
-    if (value.slice(0, 4) === "fade") {
+    if (value.slice(0, 4) === "fade" && value.indexOf("@") === -1) {
       const handleValue = utils.handleEval(value);
-      let color;
-      eval(`color=${handleValue}`);
+      let color = "";
+      try {
+        eval(`color=${handleValue}`);
+      } catch (e) {
+        console.log(value, handleValue);
+      }
       colorStore[i] = colorRgba(color).join(",");
     } else {
       colorStore[i] = colorRgba(value).join(",");
